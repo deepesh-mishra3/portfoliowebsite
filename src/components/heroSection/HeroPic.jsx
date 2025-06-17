@@ -12,9 +12,9 @@ const HeroPic = () => {
       className=" h-full flex items-center justify-center "
     >
       <img
-        src="../../public/images/Screenshot 2025-06-17 233744.png"
+        src="/images/Screenshot 2025-06-17 233744.png"
         alt="Abdelrahman Qassem"
-        className="max-h-[450px] w-auto"
+        className="w-auto h-auto md:max-w-[570px] sm:max-w-[380px] absolute bottom-[0px] z-10 left-[50%] -translate-x-[50%]"
       />
 
       <div className=" absolute -z-10 flex justify-center items-center animate-pulse ">
