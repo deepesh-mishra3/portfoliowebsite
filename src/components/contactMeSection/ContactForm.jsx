@@ -1,26 +1,31 @@
 import { motion } from "framer-motion";
 import { fadeIn } from "../../framerMotion/variants";
 import emailjs from "@emailjs/browser";
-import { useRef } from "react";
+import { useRef, useState } from "react";
 
 const ContactForm = () => {
   const form = useRef();
+  const [status, setStatus] = useState("");
 
   const sendEmail = (e) => {
     e.preventDefault();
+    setStatus("sending");
+
+    emailjs.init("7fRyrAn9rIfNoarnY");
 
     emailjs.sendForm(
       "service_eorbyai",
       "template_ix5jgor",
-      form.current,
-      "7fRyrAn9rIfNoarnY"
+      form.current
     )
       .then((result) => {
-        console.log(result.text);
+        console.log("SUCCESS!", result.text);
+        setStatus("success");
         form.current.reset();
       })
       .catch((error) => {
-        console.log(error.text);
+        console.log("FAILED...", error.text);
+        setStatus("error");
       });
   };
 
@@ -72,9 +77,16 @@ const ContactForm = () => {
         <button
           type="submit"
           className="bg-lightBrown text-white py-4 px-8 rounded-lg hover:bg-[#8B4513] transition-all duration-300"
+          disabled={status === "sending"}
         >
-          Send Message
+          {status === "sending" ? "Sending..." : "Send Message"}
         </button>
+        {status === "success" && (
+          <p className="text-green-500 text-center">Message sent successfully!</p>
+        )}
+        {status === "error" && (
+          <p className="text-red-500 text-center">Failed to send message. Please try again.</p>
+        )}
       </form>
     </motion.div>
   );
