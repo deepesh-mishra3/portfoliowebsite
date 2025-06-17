@@ -1,7 +1,29 @@
 import { motion } from "framer-motion";
 import { fadeIn } from "../../framerMotion/variants";
+import emailjs from "@emailjs/browser";
+import { useRef } from "react";
 
 const ContactForm = () => {
+  const form = useRef();
+
+  const sendEmail = (e) => {
+    e.preventDefault();
+
+    emailjs.sendForm(
+      "service_eorbyai",
+      "template_ix5jgor",
+      form.current,
+      "7fRyrAn9rIfNoarnY"
+    )
+      .then((result) => {
+        console.log(result.text);
+        form.current.reset();
+      })
+      .catch((error) => {
+        console.log(error.text);
+      });
+  };
+
   return (
     <motion.div
       variants={fadeIn("up", 0.2)}
@@ -10,7 +32,7 @@ const ContactForm = () => {
       viewport={{ once: false, amount: 0.7 }}
       className="w-full max-w-[600px]"
     >
-      <form className="flex flex-col gap-4">
+      <form ref={form} onSubmit={sendEmail} className="flex flex-col gap-4">
         <div className="flex flex-col gap-2">
           <label htmlFor="name" className="text-lightGrey">
             Name
