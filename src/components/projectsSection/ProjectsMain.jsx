@@ -21,7 +21,7 @@ const ProjectsMain = () => {
   ];
 
   return (
-    <div className="w-full">
+    <div id="projects" className="w-full">
       <div className="w-full h-full flex flex-col items-center justify-center gap-4">
         {projects.map((project, index) => {
           return (
