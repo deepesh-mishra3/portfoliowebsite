@@ -10,7 +10,9 @@ const ContactForm = () => {
 
   useEffect(() => {
     // Initialize EmailJS with environment variables
-    emailjs.init(import.meta.env.VITE_EMAILJS_PUBLIC_KEY);
+    const publicKey = import.meta.env.VITE_EMAILJS_PUBLIC_KEY;
+    console.log("Initializing EmailJS with public key:", publicKey);
+    emailjs.init(publicKey);
   }, []);
 
   const sendEmail = async (e) => {
@@ -22,8 +24,16 @@ const ContactForm = () => {
       const serviceId = import.meta.env.VITE_EMAILJS_SERVICE_ID;
       const templateId = import.meta.env.VITE_EMAILJS_TEMPLATE_ID;
       
-      console.log("Using Service ID:", serviceId);
-      console.log("Using Template ID:", templateId);
+      // Log configuration for debugging
+      console.log("EmailJS Configuration:", {
+        serviceId,
+        templateId,
+        publicKey: import.meta.env.VITE_EMAILJS_PUBLIC_KEY
+      });
+
+      if (!serviceId || !templateId) {
+        throw new Error("EmailJS configuration is missing. Please check your environment variables.");
+      }
 
       const result = await emailjs.sendForm(
         serviceId,
@@ -35,8 +45,15 @@ const ContactForm = () => {
       setStatus("success");
       form.current.reset();
     } catch (error) {
-      console.error("EmailJS Error:", error);
-      setErrorMessage(error.text || "Failed to send message. Please try again.");
+      console.error("EmailJS Error Details:", {
+        error: error,
+        message: error.text,
+        status: error.status
+      });
+      setErrorMessage(
+        error.text || 
+        "Failed to send message. Please check the console for more details."
+      );
       setStatus("error");
     }
   };
