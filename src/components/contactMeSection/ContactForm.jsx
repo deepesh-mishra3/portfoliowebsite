@@ -6,20 +6,28 @@ import { useRef, useState, useEffect } from "react";
 const ContactForm = () => {
   const form = useRef();
   const [status, setStatus] = useState("");
+  const [errorMessage, setErrorMessage] = useState("");
 
   useEffect(() => {
     // Initialize EmailJS with environment variables
-    emailjs.init(import.meta.env.VITE_EMAILJS_PUBLIC_KEY || "7fRyrAn9rIfNoarnY");
+    emailjs.init(import.meta.env.VITE_EMAILJS_PUBLIC_KEY);
   }, []);
 
   const sendEmail = async (e) => {
     e.preventDefault();
     setStatus("sending");
+    setErrorMessage("");
 
     try {
+      const serviceId = import.meta.env.VITE_EMAILJS_SERVICE_ID;
+      const templateId = import.meta.env.VITE_EMAILJS_TEMPLATE_ID;
+      
+      console.log("Using Service ID:", serviceId);
+      console.log("Using Template ID:", templateId);
+
       const result = await emailjs.sendForm(
-        import.meta.env.VITE_EMAILJS_SERVICE_ID || "service_eorbyai",
-        import.meta.env.VITE_EMAILJS_TEMPLATE_ID || "template_ix5jgor",
+        serviceId,
+        templateId,
         form.current
       );
       
@@ -27,7 +35,8 @@ const ContactForm = () => {
       setStatus("success");
       form.current.reset();
     } catch (error) {
-      console.log("FAILED...", error.text);
+      console.error("EmailJS Error:", error);
+      setErrorMessage(error.text || "Failed to send message. Please try again.");
       setStatus("error");
     }
   };
@@ -88,7 +97,7 @@ const ContactForm = () => {
           <p className="text-green-500 text-center">Message sent successfully!</p>
         )}
         {status === "error" && (
-          <p className="text-red-500 text-center">Failed to send message. Please try again.</p>
+          <p className="text-red-500 text-center">{errorMessage}</p>
         )}
       </form>
     </motion.div>
