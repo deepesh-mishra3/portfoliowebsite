@@ -1,32 +1,35 @@
 import { motion } from "framer-motion";
 import { fadeIn } from "../../framerMotion/variants";
 import emailjs from "@emailjs/browser";
-import { useRef, useState } from "react";
+import { useRef, useState, useEffect } from "react";
 
 const ContactForm = () => {
   const form = useRef();
   const [status, setStatus] = useState("");
 
-  const sendEmail = (e) => {
+  useEffect(() => {
+    // Initialize EmailJS
+    emailjs.init("7fRyrAn9rIfNoarnY");
+  }, []);
+
+  const sendEmail = async (e) => {
     e.preventDefault();
     setStatus("sending");
 
-    emailjs.init("7fRyrAn9rIfNoarnY");
-
-    emailjs.sendForm(
-      "service_eorbyai",
-      "template_ix5jgor",
-      form.current
-    )
-      .then((result) => {
-        console.log("SUCCESS!", result.text);
-        setStatus("success");
-        form.current.reset();
-      })
-      .catch((error) => {
-        console.log("FAILED...", error.text);
-        setStatus("error");
-      });
+    try {
+      const result = await emailjs.sendForm(
+        "service_eorbyai",
+        "template_ix5jgor",
+        form.current
+      );
+      
+      console.log("SUCCESS!", result.text);
+      setStatus("success");
+      form.current.reset();
+    } catch (error) {
+      console.log("FAILED...", error.text);
+      setStatus("error");
+    }
   };
 
   return (
@@ -45,7 +48,7 @@ const ContactForm = () => {
           <input
             type="text"
             id="name"
-            name="name"
+            name="user_name"
             required
             className="bg-[#1d1d1d] text-white p-4 rounded-lg focus:outline-none focus:ring-2 focus:ring-lightBrown"
           />
@@ -57,7 +60,7 @@ const ContactForm = () => {
           <input
             type="email"
             id="email"
-            name="email"
+            name="user_email"
             required
             className="bg-[#1d1d1d] text-white p-4 rounded-lg focus:outline-none focus:ring-2 focus:ring-lightBrown"
           />
