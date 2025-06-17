@@ -8,8 +8,8 @@ const ContactForm = () => {
   const [status, setStatus] = useState("");
 
   useEffect(() => {
-    // Initialize EmailJS
-    emailjs.init("7fRyrAn9rIfNoarnY");
+    // Initialize EmailJS with environment variables
+    emailjs.init(import.meta.env.VITE_EMAILJS_PUBLIC_KEY || "7fRyrAn9rIfNoarnY");
   }, []);
 
   const sendEmail = async (e) => {
@@ -18,8 +18,8 @@ const ContactForm = () => {
 
     try {
       const result = await emailjs.sendForm(
-        "service_eorbyai",
-        "template_ix5jgor",
+        import.meta.env.VITE_EMAILJS_SERVICE_ID || "service_eorbyai",
+        import.meta.env.VITE_EMAILJS_TEMPLATE_ID || "template_ix5jgor",
         form.current
       );
       
